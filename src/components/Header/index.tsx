@@ -1,11 +1,13 @@
-import { Container, Logo, Profile } from './styles'
+import { Container, Logo, Profile, ProfileImage } from './styles'
 import logo from '@assets/logo.png'
 
 export function Header() {
   return (
     <Container>
       <Logo source={logo} />
-      <Profile source={{uri: 'https://github.com/ericlys.png'}} />
+      <Profile>
+        <ProfileImage source={{uri: 'https://github.com/ericlys.png'}} />
+      </Profile>
     </Container>
   )
 }
