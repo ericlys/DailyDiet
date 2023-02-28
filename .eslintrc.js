@@ -23,7 +23,6 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
     '@typescript-eslint/no-empty-interface': 'off',
-    'react/jsx-props-no-spreading': 'error',
     'react/prop-types': 'off',
   },
 }
