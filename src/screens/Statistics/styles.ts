@@ -22,7 +22,7 @@ export const HeaderStatistics = styled.View<Props>`
 
 export const BackButton = styled.TouchableOpacity`
   position: absolute;
-  top: 38px;
+  top: 28px;
   left: 24px;
   border-radius: 999px;
 `
@@ -56,8 +56,12 @@ export const CardWrapper = styled.View`
 `
 
 export const DetailsWrapper = styled.View`
-  width: 50%;
+  width: 100%;
   flex-direction: row;
   gap: 12px;
+`
+
+export const DetailsElement = styled.View`
+  flex: 1;
 `
 
