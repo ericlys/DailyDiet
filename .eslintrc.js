@@ -24,5 +24,6 @@ module.exports = {
     semi: ['error', 'never'],
     '@typescript-eslint/no-empty-interface': 'off',
     'react/prop-types': 'off',
+    '@typescript-eslint/no-var-requires': 'off'
   },
 }

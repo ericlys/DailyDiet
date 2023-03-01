@@ -2,7 +2,7 @@ import { useFonts, NunitoSans_400Regular, NunitoSans_700Bold } from '@expo-googl
 import { ActivityIndicator, StatusBar } from 'react-native'
 import { ThemeProvider } from 'styled-components/native'
 import theme from '@theme/index'
-import { Register } from '@screens/Meal/Register'
+import { RegisterFeedback } from '@screens/Meal/RegisterFeedback'
 
 export default function App() {
   const [ fontsLoaded ] = useFonts({
@@ -16,7 +16,7 @@ export default function App() {
         backgroundColor="transparent" 
         translucent
       />      
-      { fontsLoaded ? <Register/> : <ActivityIndicator /> }
+      { fontsLoaded ? <RegisterFeedback/> : <ActivityIndicator /> }
     </ThemeProvider>
   )
 }
