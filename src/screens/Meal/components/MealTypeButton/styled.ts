@@ -2,15 +2,17 @@ import { TouchableOpacity } from 'react-native'
 import styled, { css } from 'styled-components/native'
 
 export type MealTypeByttonStyleProps = 'yes' | 'no'
+export type MealTypeByttonSizeProps = 'SM' | 'XS'
 
 type Props = {
   type: MealTypeByttonStyleProps
   isActive: boolean
+  size: MealTypeByttonSizeProps
 }
 
 export const Container = styled(TouchableOpacity)<Props>`
   width: 100%;
-  padding: 16px 0;
+  padding: ${({size}) => size === 'SM' ? '8px 0' : '16px 0' };
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -36,10 +38,15 @@ export const Container = styled(TouchableOpacity)<Props>`
     }
   }}
 `
-export const Title = styled.Text`
-  ${({theme}) => css`
-    font-family: ${theme.FONT_FAMILY.BOLD};
-    font-size: ${theme.FONT_SIZE.SM}px;
+
+type TitleProps = {
+  size: MealTypeByttonSizeProps
+}
+
+export const Title = styled.Text<TitleProps>`
+  ${({theme, size}) => css`
+    font-family: ${size === 'SM' ? theme.FONT_FAMILY.REGULAR : theme.FONT_FAMILY.BOLD};
+    font-size: ${ theme.FONT_SIZE.SM}px;
     color: ${theme.COLORS.GRAY_900};
   `}
 `
