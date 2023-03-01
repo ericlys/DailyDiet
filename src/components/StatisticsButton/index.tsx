@@ -13,7 +13,7 @@ export function StatisticsButton({ type = 'PRIMARY', ...rest }: Props) {
 
   return(
     <Container type={type} {...rest}>
-      <Highlight/>
+      <Highlight title='90,86%' description='das refeições dentro da dieta'/>
   
       <Icon color={type === 'PRIMARY' ? theme.COLORS.GREEN_700 : theme.COLORS.RED_700} />
     </Container>

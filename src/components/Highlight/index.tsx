@@ -1,10 +1,16 @@
-import { Container, Description, Percentage } from './styles'
+import { Container, Description, HighlightStyleProps, Percentage } from './styles'
 
-export function Highlight() {
+type Props = {
+  title: string
+  description: string
+  type?: HighlightStyleProps
+}
+
+export function Highlight({title, description, type = '2XL'}: Props) {
   return(
     <Container>
-      <Percentage>90,35%</Percentage>
-      <Description>das refeições dentro da dieta</Description>
+      <Percentage type={type}>{title}</Percentage>
+      <Description>{description}</Description>
     </Container>
   )
 }

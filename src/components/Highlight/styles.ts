@@ -7,10 +7,16 @@ export const Container = styled.View`
   justify-content: center;
 `
 
-export const Percentage = styled.Text`
-  ${({theme}) => css`
+export type HighlightStyleProps = 'SM' | '2XL'
+
+type Props = {
+  type: HighlightStyleProps
+}
+
+export const Percentage = styled.Text<Props>`
+  ${({theme, type}) => css`
     font-family: ${theme.FONT_FAMILY.BOLD};
-    font-size: ${theme.FONT_SIZE.XXL}px;
+    font-size: ${ type === 'SM' ? theme.FONT_SIZE.SM : theme.FONT_SIZE.XXL}px;
     color: ${theme.COLORS.GRAY_900};
   `}
   line-height: 42px;
