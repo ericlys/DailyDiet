@@ -5,12 +5,15 @@ import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
 
+import { mealCreate } from '@storage/meal/mealCreate'
+
 import { Button } from '@components/Button'
 import { Header } from '../components/Header'
 import { Input } from '../components/Input'
 import { MealTypeButton } from '../components/MealTypeButton'
 
 import { ButtonWrapper, Container, Content, ContentWrapper, Form, GridElement, GridWrapper, Title } from './styles'
+import { Alert } from 'react-native'
 
 type RouteParams = {
   params: {
@@ -21,8 +24,8 @@ type RouteParams = {
 const schema = z.object({
   name: z.string().min(3),
   description: z.string(),
-  data: z.string().length(10, { message: 'data inválida'}),
-  hour: z.string().length(5, { message: 'hora inválida'}),
+  date: z.string().length(10, { message: 'data inválida'}),
+  time: z.string().length(5, { message: 'hora inválida'}),
   inDiet: z.boolean(),
 })
 
@@ -32,8 +35,8 @@ export function Register() {
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      hour: '',
-      data: ''
+      time: '',
+      date: ''
     }
   })
 
@@ -46,8 +49,15 @@ export function Register() {
     navigation.navigate('home')
   }
 
-  function handleForm (data: FormData) {
-    console.log(data)
+  async function handleForm (data: FormData) {
+    try {
+      await mealCreate(data)
+      navigation.navigate('home')
+
+    }catch( error) {
+      Alert.alert('Nova refeição', 'Não foi possivel criar uma nova refeição.')
+      console.log(error)
+    }
   }
 
   return(
@@ -91,13 +101,13 @@ export function Register() {
             <GridElement>
               <Controller
                 control={control}
-                name="data"
+                name="date"
                 render={({field : {onChange, value}}) => (
                   <Input 
                     label='Data'
                     keyboardType='numeric'
                     maxLength={10}
-                    isError={!!errors.data?.message}
+                    isError={!!errors.date?.message}
                     onChangeText={onChange}
                     value={dateFormatter(value)}
                   />
@@ -108,13 +118,13 @@ export function Register() {
             <GridElement>
               <Controller
                 control={control}
-                name="hour"
+                name="time"
                 render={({field : {onChange, value}}) => (
                   <Input 
                     label='Hora' 
                     keyboardType='numeric'
                     maxLength={5}
-                    isError={!!errors.hour?.message}
+                    isError={!!errors.time?.message}
                     onChangeText={onChange}
                     value={hourFormatter(value)}
                   />
