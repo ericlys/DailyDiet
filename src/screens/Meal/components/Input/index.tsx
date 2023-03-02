@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TextInput } from 'react-native'
 import { TextInputProps } from 'react-native'
 import { Container, Label, InputField, InputStyleProps } from './styles'
@@ -6,10 +6,17 @@ import { Container, Label, InputField, InputStyleProps } from './styles'
 type Props = TextInputProps & {
   label: string,
   inputRef?: React.RefObject<TextInput>
+  isError?: boolean
 }
 
-export function Input({label, inputRef, ...rest}: Props) {
+export function Input({label, inputRef, isError=false, ...rest}: Props) {
   const [inputBorderColor, setInputBorderColor] = useState<InputStyleProps>('disabled')
+
+  useEffect(() => {
+    if(isError) {
+      setInputBorderColor('error')
+    }
+  }, [isError])
 
   const customOnFocus = () => {
     rest?.onFocus
@@ -18,7 +25,7 @@ export function Input({label, inputRef, ...rest}: Props) {
 
   const customOnBlur = () => {
     rest?.onBlur
-    setInputBorderColor('disabled')
+    isError ? setInputBorderColor('error') : setInputBorderColor('disabled')
   }
 
   return (
