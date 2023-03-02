@@ -1,19 +1,25 @@
 import { Card } from '@components/Card'
 import { Highlight } from '@components/Highlight'
+import { useNavigation } from '@react-navigation/native'
 
 import { useTheme } from 'styled-components/native'
 import { BackButton, CardWrapper, Container, Content, DetailsElement, DetailsWrapper, HeaderStatistics, Icon, Title } from './styles'
 
 export function Statistics() {
+  const navigation = useNavigation()
   const theme = useTheme()
+
+  function handleGoBack(){
+    navigation.goBack()
+  }
 
   const type='POSITIVE'
 
   return (
-    <Container>
-      <HeaderStatistics type={type}>
+    <Container type={type}>
+      <HeaderStatistics>
         <Highlight title='90,86%' description='das refeições dentro da dieta'/>
-        <BackButton>
+        <BackButton onPress={handleGoBack}>
           <Icon 
             color={type === 'POSITIVE' ? theme.COLORS.GREEN_700 : theme.COLORS.RED_700}
           />

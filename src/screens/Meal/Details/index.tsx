@@ -1,4 +1,5 @@
 import { Button } from '@components/Button'
+import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import { Modal } from 'react-native'
 import { Header } from '../components/Header'
@@ -6,10 +7,19 @@ import { MealTypeButton } from '../components/MealTypeButton'
 import { ButtonWrapper, Container, Content, ContentWrapper, Description, ModalContainer, ModalContent, ModalGridElement, ModalGridWrapper, ModalTitle, Title } from './styles'
 
 export function Details() {
+  const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState(false)
 
   const toggleModal = () => {
     setModalVisible(!modalVisible)
+  }
+
+  function handleGoBack() {
+    navigation.navigate('home')
+  }
+
+  function handleEditMeal() {
+    navigation.navigate('register', { meal: 'teste' })
   }
 
   return(
@@ -17,6 +27,7 @@ export function Details() {
       <Header 
         title='Refeição'
         color='green'
+        onBack={handleGoBack}
       />
 
       <Content>
@@ -48,6 +59,7 @@ export function Details() {
           <Button
             icon='PencilSimpleLine'
             title='Editar refeição'
+            onPress={handleEditMeal}
           />
           <Button
             type='SECONDARY'

@@ -9,7 +9,7 @@ type Props = {
 
 export const Container = styled.View<Props>`
   width: 100%;
-  padding: 52px 48px 52px 24px;
+  padding: 29px 48px 52px 24px;
   flex-direction: row;
 
   align-items: center;

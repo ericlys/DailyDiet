@@ -2,11 +2,15 @@ import { Button } from '@components/Button'
 import { Header } from '@components/Header'
 import { MealListItem } from '@components/MealListItem'
 import { StatisticsButton } from '@components/StatisticsButton'
+import { useNavigation } from '@react-navigation/native'
 import { SectionList } from 'react-native'
 
 import { Container, Content, ListHeader, Title } from './styles'
 
 export default function Home() {
+
+  const navigation = useNavigation()
+
   const DATA = [
     {
       date: '12.02.23',
@@ -18,11 +22,24 @@ export default function Home() {
     },
   ]
 
+  function handleStatistics() {
+    navigation.navigate('statistics')
+  }
+ 
+  function handleNewMeal() {
+    navigation.navigate('register')
+  }
+
+  function handleMealDetails() {
+    navigation.navigate('details')
+  }
 
   return (
     <Container>
       <Header/>
-      <StatisticsButton/>
+      <StatisticsButton 
+        onPress={handleStatistics}
+      />
 
       <Content>
         <Title>
@@ -33,6 +50,7 @@ export default function Home() {
           title='Nova refeição' 
           icon='Plus'
           style={{marginTop: 8}}
+          onPress={handleNewMeal}
         />
 
       </Content>
@@ -45,6 +63,7 @@ export default function Home() {
             time='20:23' 
             title={item} 
             status={'POSITIVE'}
+            onPress={handleMealDetails}
           />
         )}
         renderSectionHeader={({section: {date}}) => (

@@ -1,5 +1,6 @@
 
 import { Button } from '@components/Button'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { dateFormatter, hourFormatter } from '@utils/formmaters'
 import { useState } from 'react'
 import { View } from 'react-native'
@@ -8,10 +9,21 @@ import { Input } from '../components/Input'
 import { MealTypeButton } from '../components/MealTypeButton'
 import { Container, Content, GridElement, GridWrapper, Title } from './styles'
 
-export function Register() {
+type RouteParams = {
+  params: {
+    meal?: string;
+  }
+}
 
+export function Register() {
   const [date, setDate] = useState('')
   const [hour, setHour] = useState('')
+
+  const navigation = useNavigation()
+  const { params } = useRoute() as RouteParams
+
+  const meal = params?.meal ?? 'new'
+  
 
   const onFormmaterDate = (date: string) => {
     const dateFormated = dateFormatter(date)
@@ -23,9 +35,16 @@ export function Register() {
     setHour(dateFormated)
   }
 
+  function handleGoBack() {
+    navigation.navigate('home')
+  }
+
   return(
     <Container>
-      <Header title='Nova refeição'/>
+      <Header 
+        title={ meal === 'new' ? 'Nova refeição' : 'Editar refeição'}
+        onBack={handleGoBack}
+      />
       <Content>
         <Input label='Nome'/>
         <Input 
@@ -74,11 +93,10 @@ export function Register() {
             </GridElement>
           </GridWrapper>
         </View>
-        <View></View>
 
         <Button 
           style={{marginTop: 'auto'}} 
-          title='Cadastrar refeição'
+          title={ meal === 'new' ? 'Cadastrar refeição' : 'Salvar alterações'}
         />
       </Content>
     </Container>

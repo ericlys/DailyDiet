@@ -1,10 +1,7 @@
 
 import { ArrowLeft } from 'phosphor-react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import styled, { css } from 'styled-components/native'
-
-export const Container = styled.View`
-  flex: 1
-`
 
 export type StatisticsStyleProps = 'POSITIVE' | 'NEGATIVE'
 
@@ -12,11 +9,15 @@ type Props = {
   type: StatisticsStyleProps
 }
 
-export const HeaderStatistics = styled.View<Props>`
+export const Container = styled(SafeAreaView)<Props>`
+  flex: 1;
+  background-color: ${({theme, type}) => type === 'POSITIVE' ? theme.COLORS.GREEN_100 : theme.COLORS.RED_100};
+`
+
+export const HeaderStatistics = styled.View`
   width: 100%;
   padding: 66px 0;
 
-  background-color: ${({theme, type}) => type === 'POSITIVE' ? theme.COLORS.GREEN_100 : theme.COLORS.RED_100};
   position: relative;
 `
 
@@ -58,7 +59,7 @@ export const CardWrapper = styled.View`
 export const DetailsWrapper = styled.View`
   width: 100%;
   flex-direction: row;
-  gap: 12px;
+  gap: 17px;
 `
 
 export const DetailsElement = styled.View`
