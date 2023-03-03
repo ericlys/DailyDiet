@@ -2,25 +2,26 @@ import { Button } from '@components/Button'
 import { Header } from '@components/Header'
 import { MealListItem } from '@components/MealListItem'
 import { StatisticsButton } from '@components/StatisticsButton'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { mealgetAll } from '@storage/meal/mealGetAll'
+import { MealStorage } from '@storage/meal/MealStorage'
+import { groupMealListByDate } from '@utils/groupMealListByDate'
+import { useCallback, useEffect, useState } from 'react'
 import { SectionList } from 'react-native'
+
+type mealGroupProps = {
+  date: string;
+  data: MealStorage[];
+}
 
 import { Container, Content, ListHeader, Title } from './styles'
 
 export default function Home() {
-
   const navigation = useNavigation()
 
-  const DATA = [
-    {
-      date: '12.02.23',
-      data: ['X-tudo', 'Sanduíche', 'X-tudo','X-tudo', 'Sanduíche', 'Sanduíche', 'Lasanha de frango com queijo', 'Torta de chocolate'],
-    },
-    {
-      date: '11.02.23',
-      data: ['X-tudo', 'Whey protein com leite', 'Salada cesar com frango grelhado', 'Vitamina de banana com abacate'],
-    },
-  ]
+  const [mealGroupList, setMealGroupList] = useState<mealGroupProps[]>([])
+  const [meals, setMeals] = useState<MealStorage[]>([])
+  const [dietPercentage, setDietPercentage] = useState('0,00')
 
   function handleStatistics() {
     navigation.navigate('statistics')
@@ -34,10 +35,34 @@ export default function Home() {
     navigation.navigate('details')
   }
 
+  async function getAllMeals() {
+    const mealsStore = await mealgetAll()
+    setMeals(mealsStore)
+  }
+
+  function calculeteDietPercentage() {
+    const totalMealInDiet = meals.filter(meal => meal.inDiet).length
+    const percentageInDiet = ((totalMealInDiet / meals.length) * 100).toFixed(2).replace('.',',')
+
+    setDietPercentage(percentageInDiet)
+  }
+
+  useFocusEffect(useCallback(() => {
+    getAllMeals()
+  }, []))
+
+  useEffect(() => {
+    const mealsGroup = groupMealListByDate(meals)
+    setMealGroupList(mealsGroup)
+    calculeteDietPercentage()
+  }, [meals])
+
   return (
     <Container>
       <Header/>
       <StatisticsButton 
+        title={`${dietPercentage.toString() + '%'}`}
+        subtitle='das refeições dentro da dieta'
         onPress={handleStatistics}
       />
 
@@ -56,13 +81,13 @@ export default function Home() {
       </Content>
 
       <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
+        sections={mealGroupList}
+        keyExtractor={(item, index) => item.name + index}
         renderItem={({item}) => (
           <MealListItem 
-            time='20:23' 
-            title={item} 
-            status={'POSITIVE'}
+            time={item.time} 
+            title={item.name} 
+            status={item.inDiet ? 'POSITIVE' : 'NEGATIVE'}
             onPress={handleMealDetails}
           />
         )}

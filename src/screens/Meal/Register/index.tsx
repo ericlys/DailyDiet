@@ -4,6 +4,7 @@ import { dateFormatter, hourFormatter } from '@utils/formmaters'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
+import uuid from 'react-native-uuid'
 
 import { mealCreate } from '@storage/meal/mealCreate'
 
@@ -24,7 +25,7 @@ type RouteParams = {
 const schema = z.object({
   name: z.string().min(3),
   description: z.string(),
-  date: z.string().length(10, { message: 'data inválida'}),
+  date: z.string().length(10, { message: 'data inválida'}).transform((date) => date.replaceAll('/','.')),
   time: z.string().length(5, { message: 'hora inválida'}),
   inDiet: z.boolean(),
 })
@@ -51,7 +52,12 @@ export function Register() {
 
   async function handleForm (data: FormData) {
     try {
-      await mealCreate(data)
+      console.log(data)
+
+      await mealCreate({
+        id: uuid.v4().toString(),
+        ...data
+      })
       navigation.navigate('home')
 
     }catch( error) {
@@ -133,7 +139,7 @@ export function Register() {
             </GridElement>
           </GridWrapper>
 
-          <ContentWrapper>
+          <ContentWrapper error={!!errors.inDiet?.message}>
             <Title>Está dentro da dieta?</Title>
             <GridWrapper>
               <GridElement>

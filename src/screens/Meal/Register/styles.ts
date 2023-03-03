@@ -41,7 +41,18 @@ export const Title = styled.Text`
   `}
 `
 
-export const ContentWrapper = styled.View``
+type ContentWrapperProps = {
+  error?: boolean
+}
+
+export const ContentWrapper = styled.View<ContentWrapperProps>`
+  ${({theme, error = false}) => (
+    error && css`
+      border: 1px solid ${theme.COLORS.RED_400};
+      border-radius: 5px;
+    `
+  )}
+`
 
 export const ButtonWrapper = styled.View`
   padding: 24px;
