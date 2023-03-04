@@ -3,7 +3,7 @@ import { CardColorsStyleProps, Container } from './styles'
 
 type Props = {
   type?: CardColorsStyleProps
-  title: string
+  title: string | number
   description: string
 }
 

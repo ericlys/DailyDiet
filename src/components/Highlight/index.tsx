@@ -1,7 +1,7 @@
 import { Container, Description, HighlightStyleProps, Percentage } from './styles'
 
 type Props = {
-  title: string
+  title: string | number
   description: string
   type?: HighlightStyleProps
 }

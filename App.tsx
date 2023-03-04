@@ -3,6 +3,7 @@ import { ActivityIndicator, StatusBar } from 'react-native'
 import { ThemeProvider } from 'styled-components/native'
 import theme from '@theme/index'
 import { Routes } from '@routes/index'
+import { MealProvider } from './src/contexts/MealContext'
 
 export default function App() {
   const [ fontsLoaded ] = useFonts({
@@ -16,7 +17,9 @@ export default function App() {
         backgroundColor="transparent" 
         translucent
       />      
-      { fontsLoaded ? <Routes/> : <ActivityIndicator /> }
+      <MealProvider>
+        { fontsLoaded ? <Routes/> : <ActivityIndicator /> }
+      </MealProvider>
     </ThemeProvider>
   )
 }

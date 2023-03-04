@@ -4,9 +4,6 @@ import { dateFormatter, hourFormatter } from '@utils/formmaters'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
-import uuid from 'react-native-uuid'
-
-import { mealCreate } from '@storage/meal/mealCreate'
 
 import { Button } from '@components/Button'
 import { Header } from '../components/Header'
@@ -15,6 +12,8 @@ import { MealTypeButton } from '../components/MealTypeButton'
 
 import { ButtonWrapper, Container, Content, ContentWrapper, Form, GridElement, GridWrapper, Title } from './styles'
 import { Alert } from 'react-native'
+import { useContext } from 'react'
+import { MealsContext } from '@contexts/MealContext'
 
 type RouteParams = {
   params: {
@@ -33,6 +32,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export function Register() {
+  const { registerMeal } = useContext(MealsContext)
+
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -52,12 +53,7 @@ export function Register() {
 
   async function handleForm (data: FormData) {
     try {
-      console.log(data)
-
-      await mealCreate({
-        id: uuid.v4().toString(),
-        ...data
-      })
+      registerMeal(data)
       navigation.navigate('home')
 
     }catch( error) {
