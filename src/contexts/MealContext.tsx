@@ -25,6 +25,7 @@ type MealsProviderProps = {
 
 type MealContextProps = {
   registerMeal: (meal: Meal) => void
+  getMealDetails: (mealId: string) => MealStorage | undefined
   meals: MealStorage[]
   mealGroupList: mealGroupProps[]
   dietPercentage: string
@@ -40,6 +41,11 @@ export function MealProvider({children}: MealsProviderProps) {
   async function updateMealsList() {
     const mealsStore = await mealgetAll()
     setMeals(mealsStore)
+  }
+
+  function getMealDetails(mealId: string) {
+    const meal = meals.find(meal => meal.id === mealId)
+    return meal
   }
 
   function calculeteDietPercentage() {
@@ -71,7 +77,7 @@ export function MealProvider({children}: MealsProviderProps) {
 
 
   return (
-    <MealsContext.Provider value={{ registerMeal, meals, mealGroupList, dietPercentage }}>
+    <MealsContext.Provider value={{ registerMeal, getMealDetails, meals, mealGroupList, dietPercentage }}>
       {children}
     </MealsContext.Provider>
   )

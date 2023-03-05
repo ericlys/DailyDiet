@@ -22,8 +22,8 @@ export default function Home() {
     navigation.navigate('register')
   }
 
-  function handleMealDetails() {
-    navigation.navigate('details')
+  function handleMealDetails(mealId: string) {
+    navigation.navigate('details', { mealId })
   }
 
   const buttonType = parseFloat(dietPercentage.replace('.', '.')) < 0.5 ? 'SECONDARY' : 'PRIMARY'
@@ -60,7 +60,7 @@ export default function Home() {
             time={item.time} 
             title={item.name} 
             status={item.inDiet ? 'POSITIVE' : 'NEGATIVE'}
-            onPress={handleMealDetails}
+            onPress={() => handleMealDetails(item.id)}
           />
         )}
         renderSectionHeader={({section: {date}}) => (

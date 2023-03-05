@@ -1,14 +1,27 @@
 import { Button } from '@components/Button'
-import { useNavigation } from '@react-navigation/native'
-import { useState } from 'react'
+import { MealsContext } from '@contexts/MealContext'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { MealStorage } from '@storage/meal/MealStorage'
+import { useContext, useEffect, useState } from 'react'
 import { Modal } from 'react-native'
 import { Header } from '../components/Header'
 import { MealTypeButton } from '../components/MealTypeButton'
 import { ButtonWrapper, Container, Content, ContentWrapper, Description, ModalContainer, ModalContent, ModalGridElement, ModalGridWrapper, ModalTitle, Title } from './styles'
 
+type RouteParams = {
+  mealId: string
+}
+
 export function Details() {
   const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState(false)
+  const [meal, setMeal] = useState<MealStorage>()
+
+  const { getMealDetails } = useContext(MealsContext)
+  
+  const route = useRoute()
+ 
+  const { mealId } = route.params as RouteParams
 
   const toggleModal = () => {
     setModalVisible(!modalVisible)
@@ -19,8 +32,13 @@ export function Details() {
   }
 
   function handleEditMeal() {
-    navigation.navigate('register', { meal: 'teste' })
+    navigation.navigate('register', { meal: mealId })
   }
+
+  useEffect(() => {
+    const findMeal = getMealDetails(mealId)
+    setMeal(findMeal)
+  }, [])
 
   return(
     <Container>
@@ -32,16 +50,16 @@ export function Details() {
 
       <Content>
         <ContentWrapper>
-          <Title>Sanduíche</Title>
+          <Title>{meal?.name}</Title>
           <Description>
-            Sanduíche de pão integral com atum e salada de alface e tomate
+            {meal?.description}
           </Description>
         </ContentWrapper>
 
         <ContentWrapper>
           <Title size='SM'>Data e hora</Title>
           <Description>
-            12/08/2022 às 16:00
+            {meal?.date.replaceAll('.', '/')} às {meal?.time}
           </Description>
         </ContentWrapper>
 
@@ -51,7 +69,8 @@ export function Details() {
           <MealTypeButton 
             style={{padding: 0}}
             size='SM'
-            title='dentro da dieta'
+            title={meal?.inDiet ? 'dentro da dieta' : 'fora da dieta'}
+            type={meal?.inDiet ? 'yes' : 'no'}
           />
         </ContentWrapper>
         

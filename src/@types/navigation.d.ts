@@ -7,7 +7,9 @@ export declare global {
         meal: string
       } | undefined;
       feedback: undefined;
-      details: undefined;
+      details: {
+        mealId: string
+      };
     }
   }
 }
