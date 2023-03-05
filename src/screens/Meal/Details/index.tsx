@@ -17,7 +17,7 @@ export function Details() {
   const [modalVisible, setModalVisible] = useState(false)
   const [meal, setMeal] = useState<MealStorage>()
 
-  const { getMealDetails } = useContext(MealsContext)
+  const { getMealDetails, deleteMeal } = useContext(MealsContext)
   
   const route = useRoute()
  
@@ -33,6 +33,11 @@ export function Details() {
 
   function handleEditMeal() {
     navigation.navigate('register', { meal: mealId })
+  }
+
+  function handleDeleteMeal() {
+    deleteMeal(mealId)
+    handleGoBack()
   }
 
   useEffect(() => {
@@ -114,6 +119,7 @@ export function Details() {
               <ModalGridElement>
                 <Button 
                   title='Sim, excluir'
+                  onPress={handleDeleteMeal}
                 />
               </ModalGridElement>
             </ModalGridWrapper>

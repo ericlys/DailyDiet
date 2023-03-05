@@ -1,4 +1,5 @@
 import { mealCreate } from '@storage/meal/mealCreate'
+import { mealDelete } from '@storage/meal/mealDelete'
 import { mealgetAll } from '@storage/meal/mealGetAll'
 import { MealStorage } from '@storage/meal/MealStorage'
 import { mealUpdate } from '@storage/meal/mealUpdate'
@@ -30,6 +31,7 @@ type MealContextProps = {
   registerMeal: (meal: Meal) => void
   getMealDetails: (mealId: string) => MealStorage | undefined
   updateMeal: (meal: MealStorage) => void
+  deleteMeal: (id: string) => void
   meals: MealStorage[]
   mealGroupList: mealGroupProps[]
   dietPercentage: string
@@ -66,6 +68,16 @@ export function MealProvider({children}: MealsProviderProps) {
     }
   }
 
+  async function deleteMeal(id: string) {
+    try {
+      await mealDelete(id)
+      updateMealsList()
+    } catch(error) {
+      console.log(error)
+      Alert.alert('Exclusão da refeição', 'Não foi possivel excluir.')
+    }
+  }
+
   function calculeteDietPercentage() {
     const totalMealInDiet = meals.filter(meal => meal.inDiet).length
     const percentageInDiet = ((totalMealInDiet / meals.length) * 100).toFixed(2).replace('.',',')
@@ -95,7 +107,7 @@ export function MealProvider({children}: MealsProviderProps) {
 
 
   return (
-    <MealsContext.Provider value={{ registerMeal, getMealDetails, updateMeal, meals, mealGroupList, dietPercentage }}>
+    <MealsContext.Provider value={{ registerMeal, deleteMeal, getMealDetails, updateMeal, meals, mealGroupList, dietPercentage }}>
       {children}
     </MealsContext.Provider>
   )
