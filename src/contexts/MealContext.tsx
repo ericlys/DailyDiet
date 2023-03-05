@@ -1,8 +1,11 @@
 import { mealCreate } from '@storage/meal/mealCreate'
 import { mealgetAll } from '@storage/meal/mealGetAll'
 import { MealStorage } from '@storage/meal/MealStorage'
+import { mealUpdate } from '@storage/meal/mealUpdate'
+import { AppError } from '@utils/AppError'
 import { groupMealListByDate } from '@utils/groupMealListByDate'
 import { createContext, ReactNode, useEffect, useState } from 'react'
+import { Alert } from 'react-native'
 import uuid from 'react-native-uuid'
 
 
@@ -26,6 +29,7 @@ type MealsProviderProps = {
 type MealContextProps = {
   registerMeal: (meal: Meal) => void
   getMealDetails: (mealId: string) => MealStorage | undefined
+  updateMeal: (meal: MealStorage) => void
   meals: MealStorage[]
   mealGroupList: mealGroupProps[]
   dietPercentage: string
@@ -46,6 +50,20 @@ export function MealProvider({children}: MealsProviderProps) {
   function getMealDetails(mealId: string) {
     const meal = meals.find(meal => meal.id === mealId)
     return meal
+  }
+
+  async function updateMeal(meal: MealStorage) {
+    try {
+      await mealUpdate(meal)
+      updateMealsList()
+    } catch(error) {
+      if(error instanceof AppError){
+        Alert.alert('Atualizar refeição', error.message)
+      }else {
+        console.log(error)
+        Alert.alert('Atualizar refeição', 'Não foi possivel atualizar.')
+      }
+    }
   }
 
   function calculeteDietPercentage() {
@@ -77,7 +95,7 @@ export function MealProvider({children}: MealsProviderProps) {
 
 
   return (
-    <MealsContext.Provider value={{ registerMeal, getMealDetails, meals, mealGroupList, dietPercentage }}>
+    <MealsContext.Provider value={{ registerMeal, getMealDetails, updateMeal, meals, mealGroupList, dietPercentage }}>
       {children}
     </MealsContext.Provider>
   )

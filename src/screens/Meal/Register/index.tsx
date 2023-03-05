@@ -12,7 +12,7 @@ import { MealTypeButton } from '../components/MealTypeButton'
 
 import { ButtonWrapper, Container, Content, ContentWrapper, Form, GridElement, GridWrapper, Title } from './styles'
 import { Alert } from 'react-native'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { MealsContext } from '@contexts/MealContext'
 
 type RouteParams = {
@@ -32,9 +32,13 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export function Register() {
-  const { registerMeal } = useContext(MealsContext)
+  const { registerMeal, getMealDetails, updateMeal } = useContext(MealsContext)
 
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const navigation = useNavigation()
+  const { params } = useRoute() as RouteParams
+  const meal = params?.meal ?? 'new'
+
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       time: '',
@@ -42,25 +46,38 @@ export function Register() {
     }
   })
 
-  const navigation = useNavigation()
-  const { params } = useRoute() as RouteParams
-
-  const meal = params?.meal ?? 'new'
-
   function handleGoBack() {
     navigation.navigate('home')
   }
 
   async function handleForm (data: FormData) {
     try {
-      registerMeal(data)
-      navigation.navigate('home')
-
+      if( meal  === 'new') {
+        registerMeal(data)
+        navigation.navigate('home')
+      } else {
+        updateMeal({id: meal, ...data})
+        navigation.navigate('home')
+      }
     }catch( error) {
       Alert.alert('Nova refeição', 'Não foi possivel criar uma nova refeição.')
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    if(meal !== 'new') {
+      const mealDetails = getMealDetails(meal)
+
+      if(mealDetails){
+        setValue('name', mealDetails?.name)
+        setValue('description', mealDetails?.description)
+        setValue('date', mealDetails?.date)
+        setValue('time', mealDetails?.time)
+        setValue('inDiet', mealDetails?.inDiet)
+      }
+    }
+  })
 
   return(
     <Container >
