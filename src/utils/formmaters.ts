@@ -1,15 +1,21 @@
-export function dateFormatter(value: string) {
-  const dateFormated = value.replace(/\D/g, '')
-    .replace(/(\d{2})(\d)/, '$1/$2')
-    .replace(/(\d{2})(\d)/, '$1/$2')
-
-  return dateFormated
+export function dateFormatter(date: Date, separator = '/') {
+  if(date) {
+    const day = ('0' + date.getDate()).slice(-2)
+    const month = ('0' + (date.getMonth() + 1)).slice(-2)
+    const year = date.getFullYear()
+    const dateFormatted = `${day}${separator}${month}${separator}${year}`
+    return dateFormatted
+  }
+  return ''
 }
 
-export function hourFormatter(value: string) {
-  const hourFormated = value.replace(/\D/g, '')
-    .replace(/(\d{2})(\d)/, '$1:$2')
-
-  return hourFormated
+export function timeFormatter(time: Date) {
+  if(time) {
+    const hour = ('0' + time.getHours()).slice(-2)
+    const minutes = ('0' + time.getMinutes()).slice(-2)
+    const timeFormated = `${hour}:${minutes}`
+    return timeFormated
+  }
+  return ''
 }
 

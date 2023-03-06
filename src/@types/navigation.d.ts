@@ -6,7 +6,9 @@ export declare global {
       register: {
         meal: string
       } | undefined;
-      feedback: undefined;
+      feedback: {
+        type: 'positive' | 'negative'
+      };
       details: {
         mealId: string
       };

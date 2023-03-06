@@ -2,10 +2,22 @@ import HappyPersonSVG from '@assets/happy_person.svg'
 import { Button } from '@components/Button'
 import SadPersonSVG from '@assets/sad_person.svg'
 import { Container, Description, TextHighlight, Title, RegisterFeedbackStyleProps } from './styles'
-import { useState } from 'react'
+import { useNavigation, useRoute } from '@react-navigation/native'
+
+type RouteParams = {
+  params: {
+    type: RegisterFeedbackStyleProps
+  }
+}
 
 export function RegisterFeedback() {
-  const [type, setType] = useState<RegisterFeedbackStyleProps>('negative')
+  const navigation = useNavigation()
+  const { params } = useRoute() as RouteParams
+  const {type} = params
+
+  function handleGoToHome() {
+    navigation.navigate('home')
+  }
 
   return(
     <Container>
@@ -43,6 +55,7 @@ export function RegisterFeedback() {
       <Button 
         style={{ width: 191, marginTop: 32 }}
         title='Ir para a página inicial'
+        onPress={handleGoToHome}
       />
     </Container>
   )

@@ -2,11 +2,13 @@ import { MealStorage } from '@storage/meal/MealStorage'
 
 export const groupMealListByDate = (meals: MealStorage[] ) => {
 
-  const mealsGroupedByDate =  meals.reduce((acc, item) => {
-    if (!acc[item.date]) {
-      acc[item.date] = []
+  const mealsGroupedByDate =  meals.reduce((acc, item) => {    
+    const date = new Date(item.date).toLocaleDateString()
+    
+    if (!acc[date]) {
+      acc[date] = []
     }
-    acc[item.date].push(item)
+    acc[date].push(item)
     return acc
   }, {} as Record<string, MealStorage[]>) //  { [key: string]: MealStorage[] }
 

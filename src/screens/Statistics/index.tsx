@@ -39,13 +39,14 @@ export function Statistics() {
   })
 
 
-  const type= parseFloat(dietPercentage.replace('.', '.')) < 0.5 ? 'NEGATIVE' : 'POSITIVE'
+  const type= dietPercentage <= 50 ? 'NEGATIVE' : 'POSITIVE'
+  const formattedDietPorcentage = dietPercentage.toFixed(2).replace('.',',')
 
   return (
     <Container type={type}>
       <HeaderStatistics>
         <Highlight 
-          title={dietPercentage + '%'}
+          title={formattedDietPorcentage + '%'}
           description='das refeições dentro da dieta'
         />
         <BackButton onPress={handleGoBack}>

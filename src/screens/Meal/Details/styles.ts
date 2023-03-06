@@ -1,10 +1,32 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import styled, { css } from 'styled-components/native'
 
-export const Container = styled(SafeAreaView)`
+export type DetailsColorProps = 'green' | 'gray' | 'red'
+
+type ContainerProps = {
+  color: DetailsColorProps
+}
+
+export const Container = styled(SafeAreaView)<ContainerProps>`
   flex: 1;
 
-  background: ${({theme}) => theme.COLORS.GREEN_100};
+  ${({color, theme}) => {
+    switch (color) {
+    case 'green':
+      return css`
+        background-color: ${theme.COLORS.GREEN_100};
+      `
+    case 'red':
+      return css`
+        background-color: ${theme.COLORS.RED_100};
+      `
+    default :
+      return css`
+        background-color: ${theme.COLORS.GRAY_300};
+      `
+    }  
+  }
+}
 `
 
 export const Content = styled.View`

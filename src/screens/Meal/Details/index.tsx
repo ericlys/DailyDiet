@@ -2,6 +2,7 @@ import { Button } from '@components/Button'
 import { MealsContext } from '@contexts/MealContext'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { MealStorage } from '@storage/meal/MealStorage'
+import { dateFormatter, timeFormatter } from '@utils/formmaters'
 import { useContext, useEffect, useState } from 'react'
 import { Modal } from 'react-native'
 import { Header } from '../components/Header'
@@ -16,6 +17,7 @@ export function Details() {
   const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState(false)
   const [meal, setMeal] = useState<MealStorage>()
+  const [dateFormatted, setDateFormatted] = useState('')
 
   const { getMealDetails, deleteMeal } = useContext(MealsContext)
   
@@ -43,13 +45,17 @@ export function Details() {
   useEffect(() => {
     const findMeal = getMealDetails(mealId)
     setMeal(findMeal)
+
+    if(findMeal){
+      setDateFormatted(`${dateFormatter(new Date(findMeal?.date ))} às ${timeFormatter(new Date(findMeal?.time))}`)
+    }
   }, [])
 
   return(
-    <Container>
+    <Container color={meal?.inDiet ? 'green' : 'red'}>
       <Header 
         title='Refeição'
-        color='green'
+        color={meal?.inDiet ? 'green' : 'red'}
         onBack={handleGoBack}
       />
 
@@ -64,7 +70,7 @@ export function Details() {
         <ContentWrapper>
           <Title size='SM'>Data e hora</Title>
           <Description>
-            {meal?.date.replaceAll('.', '/')} às {meal?.time}
+            {dateFormatted}
           </Description>
         </ContentWrapper>
 

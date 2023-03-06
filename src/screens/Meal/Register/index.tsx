@@ -1,17 +1,19 @@
 
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { dateFormatter, hourFormatter } from '@utils/formmaters'
+import { dateFormatter, timeFormatter } from '@utils/formmaters'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import {zodResolver} from '@hookform/resolvers/zod'
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 import { Button } from '@components/Button'
 import { Header } from '../components/Header'
 import { Input } from '../components/Input'
 import { MealTypeButton } from '../components/MealTypeButton'
 
+
 import { ButtonWrapper, Container, Content, ContentWrapper, Form, GridElement, GridWrapper, Title } from './styles'
-import { Alert } from 'react-native'
+import { Alert, Platform, TouchableOpacity } from 'react-native'
 import { useContext, useEffect, useState } from 'react'
 import { MealsContext } from '@contexts/MealContext'
 
@@ -24,8 +26,8 @@ type RouteParams = {
 const schema = z.object({
   name: z.string().min(3),
   description: z.string(),
-  date: z.string().length(10, { message: 'data inválida'}).transform((date) => date.replaceAll('/','.')),
-  time: z.string().length(5, { message: 'hora inválida'}),
+  date: z.date(),
+  time: z.date(),
   inDiet: z.boolean(),
 })
 
@@ -33,6 +35,8 @@ type FormData = z.infer<typeof schema>
 
 export function Register() {
   const { registerMeal, getMealDetails, updateMeal } = useContext(MealsContext)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [showTimePicker, setShowTimePicker] = useState(false)
 
   const navigation = useNavigation()
   const { params } = useRoute() as RouteParams
@@ -40,21 +44,33 @@ export function Register() {
 
   const { control, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      time: '',
-      date: ''
-    }
   })
 
   function handleGoBack() {
     navigation.navigate('home')
   }
 
+  const handleShowDataPicker = () => {
+    setShowDatePicker(true)
+  }
+
+  const handleShowTimePicker = () => {
+    setShowTimePicker(true)
+  }
+
+  const handleHideDatePicker = () => {
+    setShowDatePicker(false)
+  }
+
+  const handleHideTimePicker = () => {
+    setShowTimePicker(false)
+  }
+
   async function handleForm (data: FormData) {
     try {
       if( meal  === 'new') {
         registerMeal(data)
-        navigation.navigate('home')
+        navigation.navigate('feedback', {type: data.inDiet ? 'positive' : 'negative'})
       } else {
         updateMeal({id: meal, ...data})
         navigation.navigate('home')
@@ -72,12 +88,12 @@ export function Register() {
       if(mealDetails){
         setValue('name', mealDetails?.name)
         setValue('description', mealDetails?.description)
-        setValue('date', mealDetails?.date)
-        setValue('time', mealDetails?.time)
+        setValue('date', new Date(mealDetails?.date))
+        setValue('time',  new Date(mealDetails?.time))
         setValue('inDiet', mealDetails?.inDiet)
       }
     }
-  })
+  },[])
 
   return(
     <Container >
@@ -122,14 +138,28 @@ export function Register() {
                 control={control}
                 name="date"
                 render={({field : {onChange, value}}) => (
-                  <Input 
-                    label='Data'
-                    keyboardType='numeric'
-                    maxLength={10}
-                    isError={!!errors.date?.message}
-                    onChangeText={onChange}
-                    value={dateFormatter(value)}
-                  />
+                  <TouchableOpacity onPress={handleShowDataPicker}>
+                    <Input 
+                      label='Data'
+                      isError={!!errors.date?.message}
+                      value={dateFormatter(value)}
+                      editable={false}
+                    />
+
+                    {showDatePicker &&
+                      <DateTimePicker
+                        mode='date'
+                        value={value ?? new Date()}
+                        display={Platform.OS === 'android' ? 'spinner' : 'default'}
+                        onTouchCancel={handleHideDatePicker}
+                        onChange={(_, selectedDate) => {
+                          // setShowDatePicker(Platform.OS === 'ios')
+                          handleHideDatePicker()
+                          onChange(selectedDate)
+                        }}
+                      />
+                    }
+                  </TouchableOpacity>
                 )}
               />
             </GridElement>
@@ -139,14 +169,28 @@ export function Register() {
                 control={control}
                 name="time"
                 render={({field : {onChange, value}}) => (
-                  <Input 
-                    label='Hora' 
-                    keyboardType='numeric'
-                    maxLength={5}
-                    isError={!!errors.time?.message}
-                    onChangeText={onChange}
-                    value={hourFormatter(value)}
-                  />
+                  <TouchableOpacity onPress={handleShowTimePicker}>
+                    <Input 
+                      label='Hora'
+                      isError={!!errors.time?.message}
+                      value={timeFormatter(value)}
+                      editable={false}
+                    />
+
+                    {showTimePicker &&
+                      <DateTimePicker
+                        mode='time'
+                        value={value ?? new Date()}
+                        display={Platform.OS === 'android' ? 'spinner' : 'default'}
+                        is24Hour
+                        onTouchCancel={handleHideTimePicker}
+                        onChange={(_, selectedTime) => {
+                          handleHideTimePicker()
+                          onChange(selectedTime)
+                        }}
+                      />
+                    }
+                  </TouchableOpacity>
                 )}
               />
             </GridElement>

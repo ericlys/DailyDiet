@@ -16,10 +16,10 @@ type mealGroupProps = {
 }
 
 type Meal = {
-  time: string;
   name: string;
   description: string;
-  date: string;
+  date: Date;
+  time: Date;
   inDiet: boolean;
 }
 
@@ -34,7 +34,7 @@ type MealContextProps = {
   deleteMeal: (id: string) => void
   meals: MealStorage[]
   mealGroupList: mealGroupProps[]
-  dietPercentage: string
+  dietPercentage: number
 }
 
 export const MealsContext = createContext({} as MealContextProps)
@@ -42,7 +42,7 @@ export const MealsContext = createContext({} as MealContextProps)
 export function MealProvider({children}: MealsProviderProps) {
   const [meals, setMeals] = useState<MealStorage[]>([])
   const [mealGroupList, setMealGroupList] = useState<mealGroupProps[]>([])
-  const [dietPercentage, setDietPercentage] = useState('0,00')
+  const [dietPercentage, setDietPercentage] = useState(0)
 
   async function updateMealsList() {
     const mealsStore = await mealgetAll()
@@ -80,7 +80,7 @@ export function MealProvider({children}: MealsProviderProps) {
 
   function calculeteDietPercentage() {
     const totalMealInDiet = meals.filter(meal => meal.inDiet).length
-    const percentageInDiet = ((totalMealInDiet / meals.length) * 100).toFixed(2).replace('.',',')
+    const percentageInDiet = ((totalMealInDiet / meals.length) * 100) | 0
 
     setDietPercentage(percentageInDiet)
   }
