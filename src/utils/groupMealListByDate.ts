@@ -1,5 +1,10 @@
 import { MealStorage } from '@storage/meal/MealStorage'
 
+function convertToDatetime(dataString: string) {
+  const [day, month, year] = dataString.split('/')
+  return new Date(`${year}-${month}-${day}`).getTime()
+}
+
 export const groupMealListByDate = (meals: MealStorage[] ) => {
 
   const mealsGroupedByDate =  meals.reduce((acc, item) => {    
@@ -18,7 +23,7 @@ export const groupMealListByDate = (meals: MealStorage[] ) => {
         date,
         data: mealsGroupedByDate[date],
       }
-    })
+    }).sort((a, b) =>  convertToDatetime(b.date) - convertToDatetime(a.date))
 
   return result
 }
