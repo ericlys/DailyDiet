@@ -1,4 +1,4 @@
-# IgniteTeam
+# DailyDiet
 
 Meal registration application, which contains the following features:
 
